@@ -24,7 +24,11 @@ type URL string
 
 type Queries string
 type Template []DataItem
-type Error string
+type Error struct {
+	Title   string `json:title`
+	Code    int    `json:code`
+	Message string `json:message`
+}
 
 type DataItem struct {
 	Name   string `json:"name" bson:"name"`
@@ -67,13 +71,13 @@ type Collection struct {
 	Items    interface{} `json:"items"`
 	Queries  []Query     `json:"queries"`
 	Template Template    `json:"template"`
-
-	ID       int    `json:"ID"`
-	Previous string `json:"previous"`
-	Next     string `json:"next"`
-	Offset   int    `json:"offset"`
-	Count    int    `json:"count"`
-	Limit    int    `json:"limit"`
+	ID       int         `json:"ID"`
+	Previous string      `json:"previous"`
+	Next     string      `json:"next"`
+	Offset   int         `json:"offset"`
+	Count    int         `json:"count"`
+	Limit    int         `json:"limit"`
+	Error    *Error      `json:error`
 }
 
 // Top level data structure, everything is a collection

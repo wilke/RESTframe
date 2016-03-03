@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	//"time"
 )
@@ -41,7 +42,7 @@ type File struct {
 type Attributes map[string]interface{}
 
 type Node struct {
-	Id            string      `json:"ID"`
+	ID            string      `json:"ID"`
 	Version       string      `json:"version"`
 	File          File        `json:"file"`
 	Attributes    interface{} `json:"attributes"`
@@ -100,11 +101,11 @@ func (c Collection) ToJson() ([]byte, error) {
 }
 
 // Client methods
-func (c Client) GetToken() (string, error)            { return "", nil }
-func (c Client) SetAuthHeader() (string, error)       { return "", nil }
-func (c Client) CheckAuthHeader() (string, error)     { return "", nil }
-func (c Client) Post(url string, d interface{}) error { return nil }
-func (c Client) Put(url string, d interface{}) error  { return nil }
+func (c Client) GetToken() (string, error)                          { return "", nil }
+func (c Client) SetAuthHeader() (string, error)                     { return "", nil }
+func (c Client) CheckAuthHeader() (string, error)                   { return "", nil }
+func (c Client) Post(url string, d interface{}) (Collection, error) { return nil, nil }
+func (c Client) Put(url string, d interface{}) (Collection, error)  { return nil, nil }
 
 func (c Client) Get(uri string) (Collection, int, error) {
 
@@ -126,6 +127,15 @@ func (c Client) Get(uri string) (Collection, int, error) {
 	} else {
 		status = resp.StatusCode
 	}
+
+	// Shock returns different structure if data not found
+	// Create error if status code is not 200
+	if status != 200 {
+		collection.Error = strconv.Itoa(status)
+		e := errors.New("Status not 200")
+		return collection, status, e
+	}
+
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 
@@ -144,7 +154,7 @@ func (c Client) Get(uri string) (Collection, int, error) {
 		collection.Total_count = tmp_multiple.Total_count
 		collection.Data = tmp_multiple.Data
 
-		fmt.Printf("Mutiple %+v\n", collection)
+		//fmt.Printf("Mutiple %+v\n", collection)
 		return collection, status, nil
 	} else {
 		nodes = append(nodes, tmp_single.Data)
