@@ -101,11 +101,16 @@ func (c Collection) ToJson() ([]byte, error) {
 }
 
 // Client methods
-func (c Client) GetToken() (string, error)                          { return "", nil }
-func (c Client) SetAuthHeader() (string, error)                     { return "", nil }
-func (c Client) CheckAuthHeader() (string, error)                   { return "", nil }
-func (c Client) Post(url string, d interface{}) (Collection, error) { return nil, nil }
-func (c Client) Put(url string, d interface{}) (Collection, error)  { return nil, nil }
+func (c Client) GetToken() (string, error)        { return "", nil }
+func (c Client) SetAuthHeader() (string, error)   { return "", nil }
+func (c Client) CheckAuthHeader() (string, error) { return "", nil }
+func (c Client) Post(uri string, d interface{}) (Collection, error) {
+
+	//url, err := url.Parse(uri)
+
+	return Collection{}, nil
+}
+func (c Client) Put(url string, d interface{}) (Collection, error) { return Collection{}, nil }
 
 func (c Client) Get(uri string) (Collection, int, error) {
 
